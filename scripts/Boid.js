@@ -5,7 +5,8 @@ class Boid {
 		this.acc = p5.Vector.random2D()
 
 		this.maxSpeed = 3
-		this.maxForce = 0.2
+		this.maxForce = 0.15
+		this.triangleRadius = 10
 	}
 
 	align() {
@@ -87,8 +88,18 @@ class Boid {
 	}
 
 	draw() {
-		stroke('green')
-		strokeWeight(7)
-		point(this.pos.x, this.pos.y)
+		let angle = degrees(this.vel.heading())
+
+		const triangle = [
+			{ x: this.pos.x + this.triangleRadius * cos(angle), y: this.pos.y + this.triangleRadius * sin(angle) },
+			{ x: this.pos.x + this.triangleRadius * cos(angle + 150), y: this.pos.y + this.triangleRadius * sin(angle + 150) },
+			{ x: this.pos.x + this.triangleRadius * cos(angle - 150), y: this.pos.y + this.triangleRadius * sin(angle - 150) },
+		]
+
+		stroke('black')
+		strokeWeight(1)
+		line(triangle[0].x, triangle[0].y, triangle[1].x, triangle[1].y)
+		line(triangle[1].x, triangle[1].y, triangle[2].x, triangle[2].y)
+		line(triangle[2].x, triangle[2].y, triangle[0].x, triangle[0].y)
 	}
 }

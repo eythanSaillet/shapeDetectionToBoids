@@ -5,8 +5,9 @@ let mouse,
 
 function setup() {
 	createCanvas(750, 750).parent('canvasContainer')
+	angleMode(DEGREES)
 
-	for (let i = 0; i < 250; i++) {
+	for (let i = 0; i < 100; i++) {
 		boids.push(new Boid())
 	}
 
@@ -18,14 +19,13 @@ function setup() {
 function draw() {
 	background(220)
 
-	// for (const _boid of boids) {
-	// 	_boid.applyForces()
-	// 	_boid.move()
-	// 	_boid.draw()
-	// }
+	for (const _boid of boids) {
+		_boid.applyForces()
+		_boid.move()
+		_boid.draw()
+	}
 
 	// Draw select zone
-
 	if (mouseIsPressed) {
 		stroke('red')
 		strokeWeight(3)
