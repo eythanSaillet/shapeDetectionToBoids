@@ -1,15 +1,20 @@
 let mouse,
 	selectZone = [],
 	activeZone = [],
-	boids = []
+	boids = [],
+	walls = []
 
 function setup() {
 	createCanvas(750, 750).parent('canvasContainer')
 	angleMode(DEGREES)
 
-	for (let i = 0; i < 100; i++) {
+	for (let i = 0; i < 5; i++) {
 		boids.push(new Boid())
 	}
+
+	console.log(walls)
+	walls.push(new Wall(500, 50, 500, 650))
+	walls.push(new Wall(150, 700, 400, 700))
 
 	mouse = {
 		clickedPos: createVector(),
@@ -19,10 +24,17 @@ function setup() {
 function draw() {
 	background(220)
 
+	// Boids
 	for (const _boid of boids) {
 		_boid.applyForces()
 		_boid.move()
 		_boid.draw()
+		line(boids[0].pos.x, boids[0].pos.y, boids[0].pos.x + boids[0].vel.x * 1000, boids[0].pos.y + boids[0].vel.y * 1000)
+	}
+
+	// Draw walls
+	for (const _wall of walls) {
+		_wall.draw()
 	}
 
 	// Draw select zone
@@ -50,3 +62,12 @@ function mousePressed() {
 function mouseReleased() {
 	activeZone.push(selectZone)
 }
+
+// function mouseMoved() {
+// 	boids[0].vel.x = mouseX - width / 2
+// 	boids[0].vel.y = mouseY - height / 2
+
+// 	boids[0].vel.normalize()
+
+// 	console.log(intersectTest(walls[0], boids[0].pos, boids[0].vel))
+// }

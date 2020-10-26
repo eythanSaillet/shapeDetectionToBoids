@@ -72,6 +72,33 @@ class Boid {
 		this.acc.add(this.align())
 		this.acc.add(this.cohesion())
 		this.acc.add(this.separation())
+
+		for (const _wall of walls) {
+			let intersectInfo = intersectTest(_wall, this.pos, this.vel)
+			if (intersectInfo !== null) {
+				let repulsion = createVector(this.pos.x, this.pos.y, intersectInfo[1].x, intersectInfo[1].y)
+				let test = createVector(0, 1)
+				// repulsion.reflect()
+				// repulsion.setMag(0.5)
+				// repulsion.limit(this.maxForce)
+				// this.acc.add(repulsion)
+
+				function dotProduct(vec1, vec2) {
+					// get the dot product of this and {avec}
+					return vec2.x * vec1.x + vec2.y * vec1.y // returns number
+				}
+				let len = dotProduct(test.normalize(), repulsion) * 2
+				let reflect = createVector(test.x * len - repulsion.x, test.y * len - repulsion.y)
+				// console.log(reflect)
+				reflect.setMag(1)
+				reflect.limit(this.maxForce)
+				this.acc.add(reflect)
+
+				stroke('green')
+				strokeWeight(3)
+				line(intersectInfo[1].x, intersectInfo[1].y, intersectInfo[1].x + reflect.x * 500, intersectInfo[1].y + reflect.y * 500)
+			}
+		}
 	}
 
 	move() {
