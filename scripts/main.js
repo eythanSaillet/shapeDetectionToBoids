@@ -8,13 +8,15 @@ function setup() {
 	createCanvas(750, 750).parent('canvasContainer')
 	angleMode(DEGREES)
 
-	for (let i = 0; i < 5; i++) {
+	for (let i = 0; i < 50; i++) {
 		boids.push(new Boid())
 	}
 
-	console.log(walls)
-	walls.push(new Wall(500, 50, 500, 650))
-	walls.push(new Wall(150, 700, 400, 700))
+	walls.push(new Wall(0, 0, width - 0, 0))
+	walls.push(new Wall(0, height - 0, width - 0, height - 0))
+	walls.push(new Wall(0, 0, 0, height - 0))
+	walls.push(new Wall(width - 0, 0, width - 0, height - 0))
+	walls.push(new Wall(width / 2, 150, width / 2, 450))
 
 	mouse = {
 		clickedPos: createVector(),
@@ -29,7 +31,6 @@ function draw() {
 		_boid.applyForces()
 		_boid.move()
 		_boid.draw()
-		line(boids[0].pos.x, boids[0].pos.y, boids[0].pos.x + boids[0].vel.x * 1000, boids[0].pos.y + boids[0].vel.y * 1000)
 	}
 
 	// Draw walls

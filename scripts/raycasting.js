@@ -1,3 +1,4 @@
+let wallRepulsionRange = 110
 class Wall {
 	constructor(a1, a2, b1, b2) {
 		this.a = createVector(a1, a2)
@@ -19,13 +20,14 @@ function intersectTest(wall, pos, dir) {
 	let crossPoint, dist
 	if (t > 0 && t < 1 && u > 0) {
 		crossPoint = createVector(wall.a.x + t * (wall.b.x - wall.a.x), wall.a.y + t * (wall.b.y - wall.a.y))
-		stroke('red')
-		strokeWeight(10)
-		point(crossPoint.x, crossPoint.y)
+		// stroke('red')
+		// strokeWeight(10)
+		// point(crossPoint.x, crossPoint.y)
 		dist = pos.dist(crossPoint)
-		if (dist < 200) {
-			return [true, crossPoint, dist]
+		if (dist < wallRepulsionRange) {
+			// console.log({ state: true, dist: dist })
+			return { state: true, dist: dist }
 		}
 	}
-	return null
+	return { state: false }
 }

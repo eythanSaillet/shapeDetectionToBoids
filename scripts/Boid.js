@@ -3,7 +3,7 @@ class Boid {
 		this.pos = createVector(random(width), random(height))
 		this.vel = p5.Vector.random2D()
 		this.acc = p5.Vector.random2D()
-
+		this.angle = null
 		this.maxSpeed = 3
 		this.maxForce = 0.15
 		this.triangleRadius = 10
@@ -73,30 +73,39 @@ class Boid {
 		this.acc.add(this.cohesion())
 		this.acc.add(this.separation())
 
+		let ray2 = createVector(cos(this.angle - 60), sin(this.angle - 60))
+		let ray1 = createVector(cos(this.angle + 60), sin(this.angle + 60))
+		// stroke('green')
+		// strokeWeight(1)
+		// line(this.pos.x, this.pos.y, ray1.x, ray1.y)
+		// line(this.pos.x, this.pos.y, ray2.x, ray2.y)
+
+		// Apply wall repulsion
 		for (const _wall of walls) {
-			let intersectInfo = intersectTest(_wall, this.pos, this.vel)
-			if (intersectInfo !== null) {
-				let repulsion = createVector(this.pos.x, this.pos.y, intersectInfo[1].x, intersectInfo[1].y)
-				let test = createVector(0, 1)
-				// repulsion.reflect()
-				// repulsion.setMag(0.5)
-				// repulsion.limit(this.maxForce)
-				// this.acc.add(repulsion)
+			this.wallRepulsion(_wall, this.vel)
+			this.wallRepulsion(_wall, ray1)
+			this.wallRepulsion(_wall, ray2)
+		}
+	}
 
-				function dotProduct(vec1, vec2) {
-					// get the dot product of this and {avec}
-					return vec2.x * vec1.x + vec2.y * vec1.y // returns number
-				}
-				let len = dotProduct(test.normalize(), repulsion) * 2
-				let reflect = createVector(test.x * len - repulsion.x, test.y * len - repulsion.y)
-				// console.log(reflect)
-				reflect.setMag(1)
-				reflect.limit(this.maxForce)
-				this.acc.add(reflect)
+	wallRepulsion(wall, ray) {
+		let intersectInfo = intersectTest(wall, this.pos, ray)
+		if (intersectInfo.state) {
+			// strokeWeight(15)
+			// stroke('blue')
+			// point(wallCenter.x, wallCenter.y)
+			let wallVector = createVector(wall.b.x - wall.a.x, wall.b.y - wall.a.y)
+			let wallCenter = createVector(wall.a.x + wallVector.x / 2, wall.a.y + wallVector.y / 2)
 
-				stroke('green')
-				strokeWeight(3)
-				line(intersectInfo[1].x, intersectInfo[1].y, intersectInfo[1].x + reflect.x * 500, intersectInfo[1].y + reflect.y * 500)
+			let wallVectorAngle = wallVector.heading()
+			let normal1 = createVector(cos(wallVectorAngle + 90), sin(wallVectorAngle + 90))
+			let normal2 = createVector(cos(wallVectorAngle - 90), sin(wallVectorAngle - 90))
+
+			let distFactor = 1 - intersectInfo.dist / wallRepulsionRange
+			if (this.pos.dist(createVector(wallCenter.x + normal1.x, wallCenter.y + normal1.y)) < this.pos.dist(createVector(wallCenter.x + normal2.x, wallCenter.y + normal2.y))) {
+				this.acc.add(normal1).setMag(distFactor * 0.3)
+			} else {
+				this.acc.add(normal2).setMag(distFactor * 0.3)
 			}
 		}
 	}
@@ -115,12 +124,12 @@ class Boid {
 	}
 
 	draw() {
-		let angle = degrees(this.vel.heading())
+		this.angle = degrees(this.vel.heading())
 
 		const triangle = [
-			{ x: this.pos.x + this.triangleRadius * cos(angle), y: this.pos.y + this.triangleRadius * sin(angle) },
-			{ x: this.pos.x + this.triangleRadius * cos(angle + 150), y: this.pos.y + this.triangleRadius * sin(angle + 150) },
-			{ x: this.pos.x + this.triangleRadius * cos(angle - 150), y: this.pos.y + this.triangleRadius * sin(angle - 150) },
+			{ x: this.pos.x + this.triangleRadius * cos(this.angle), y: this.pos.y + this.triangleRadius * sin(this.angle) },
+			{ x: this.pos.x + this.triangleRadius * cos(this.angle + 150), y: this.pos.y + this.triangleRadius * sin(this.angle + 150) },
+			{ x: this.pos.x + this.triangleRadius * cos(this.angle - 150), y: this.pos.y + this.triangleRadius * sin(this.angle - 150) },
 		]
 
 		stroke('black')
