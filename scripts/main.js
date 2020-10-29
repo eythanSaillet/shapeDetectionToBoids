@@ -8,18 +8,15 @@ let mouse,
 	separationSlider
 
 function setup() {
-	createCanvas(750, 750).parent('canvasContainer')
+	createCanvas(1280, 720).parent('canvasContainer')
 	angleMode(DEGREES)
 
 	for (let i = 0; i < 150; i++) {
 		boids.push(new Boid())
 	}
 
-	// Border walls
-	walls.push(new Wall(0, 0, width - 0, 0))
-	walls.push(new Wall(0, height - 0, width - 0, height - 0))
-	walls.push(new Wall(0, 0, 0, height - 0))
-	walls.push(new Wall(width - 0, 0, width - 0, height - 0))
+	// Create basic wall
+	wallClear()
 
 	mouse = {
 		clickedPos: createVector(),
@@ -58,6 +55,14 @@ function draw() {
 	}
 }
 
+function wallClear() {
+	walls = []
+	walls.push(new Wall(0, 0, width - 0, 0))
+	walls.push(new Wall(0, height - 0, width - 0, height - 0))
+	walls.push(new Wall(0, 0, 0, height - 0))
+	walls.push(new Wall(width - 0, 0, width - 0, height - 0))
+}
+
 function mousePressed() {
 	mouse.clickedPos = createVector(mouseX, mouseY)
 }
@@ -66,3 +71,16 @@ function mouseReleased() {
 	activeZone.push(selectZone)
 	walls.push(new Wall(mouse.clickedPos.x, mouse.clickedPos.y, mouse.pos.x, mouse.pos.y))
 }
+
+function drawWallFromData() {
+	window
+		.fetch('scripts/data.json')
+		.then((_response) => _response.json())
+		.then((_config) => {
+			console.log(_config)
+		})
+}
+
+let drawWallInterval = setInterval(() => {
+	drawWallFromData()
+}, 1000)

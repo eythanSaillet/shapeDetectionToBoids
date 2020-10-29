@@ -71,9 +71,15 @@ while True:
 	# JSON Writer loop
 	if frameCounter % 10 == 0:
 		data = pd.Series(contours).to_json(orient='values')
+		data = json.loads(data)
 		with open('data.json', 'w', encoding='utf8') as outfile:
 			json.dump(data, outfile, ensure_ascii=False)
 	frameCounter += 1
+
+	# Get video dimension
+	# width = cam.get(3)
+	# height = cam.get(4)
+	# print(width, height)
 
 
 
