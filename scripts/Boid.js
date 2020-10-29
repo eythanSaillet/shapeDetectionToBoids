@@ -1,16 +1,16 @@
 class Boid {
 	constructor() {
-		this.pos = createVector(random(width), random(height))
+		this.pos = createVector(random(30, width - 30), random(30, height - 30))
 		this.vel = p5.Vector.random2D()
 		this.acc = p5.Vector.random2D()
 		this.angle = null
-		this.maxSpeed = 3
+		this.maxSpeed = 2
 		this.maxForce = 0.15
-		this.triangleRadius = 10
+		this.triangleRadius = 7
 	}
 
 	align() {
-		let radius = 30
+		let radius = 40
 		let steering = createVector()
 		let influencer = 0
 		for (const _boid of boids) {
@@ -29,7 +29,7 @@ class Boid {
 	}
 
 	cohesion() {
-		let radius = 40
+		let radius = 50
 		let steering = createVector()
 		let influencer = 0
 		for (const _boid of boids) {
@@ -47,7 +47,7 @@ class Boid {
 	}
 
 	separation() {
-		let radius = 15
+		let radius = 20
 		let steering = createVector()
 		let influencer = 0
 		for (const _boid of boids) {
@@ -69,12 +69,15 @@ class Boid {
 	}
 
 	applyForces() {
-		this.acc.add(this.align())
-		this.acc.add(this.cohesion())
-		this.acc.add(this.separation())
+		// 0.8
+		this.acc.add(this.align().mult(alignSlider.value()))
+		// 0.4
+		this.acc.add(this.cohesion().mult(cohesionSlider.value()))
+		// 0.5
+		this.acc.add(this.separation().mult(separationSlider.value()))
 
-		let ray2 = createVector(cos(this.angle - 60), sin(this.angle - 60))
-		let ray1 = createVector(cos(this.angle + 60), sin(this.angle + 60))
+		let ray2 = createVector(cos(this.angle - 80), sin(this.angle - 80))
+		let ray1 = createVector(cos(this.angle + 80), sin(this.angle + 80))
 		// stroke('green')
 		// strokeWeight(1)
 		// line(this.pos.x, this.pos.y, ray1.x, ray1.y)
@@ -86,6 +89,8 @@ class Boid {
 			this.wallRepulsion(_wall, ray1)
 			this.wallRepulsion(_wall, ray2)
 		}
+
+		// this.acc.setMag(0.07)
 	}
 
 	wallRepulsion(wall, ray) {
@@ -102,11 +107,15 @@ class Boid {
 			let normal2 = createVector(cos(wallVectorAngle - 90), sin(wallVectorAngle - 90))
 
 			let distFactor = 1 - intersectInfo.dist / wallRepulsionRange
+			// if (ray === this.vel) {
+			// 	distFactor *= 2
+			// }
 			if (this.pos.dist(createVector(wallCenter.x + normal1.x, wallCenter.y + normal1.y)) < this.pos.dist(createVector(wallCenter.x + normal2.x, wallCenter.y + normal2.y))) {
-				this.acc.add(normal1).setMag(distFactor * 0.3)
+				this.acc.add(normal1).setMag(Math.exp(distFactor * 1.2) * 0.05)
 			} else {
-				this.acc.add(normal2).setMag(distFactor * 0.3)
+				this.acc.add(normal2).setMag(Math.exp(distFactor * 1.2) * 0.05)
 			}
+			// console.log(distFactor, Math.exp(distFactor * 1.2) * 0.1)
 		}
 	}
 

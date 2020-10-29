@@ -2,16 +2,20 @@ let mouse,
 	selectZone = [],
 	activeZone = [],
 	boids = [],
-	walls = []
+	walls = [],
+	alignSlider,
+	cohesionSlider,
+	separationSlider
 
 function setup() {
 	createCanvas(750, 750).parent('canvasContainer')
 	angleMode(DEGREES)
 
-	for (let i = 0; i < 50; i++) {
+	for (let i = 0; i < 150; i++) {
 		boids.push(new Boid())
 	}
 
+	// Border walls
 	walls.push(new Wall(0, 0, width - 0, 0))
 	walls.push(new Wall(0, height - 0, width - 0, height - 0))
 	walls.push(new Wall(0, 0, 0, height - 0))
@@ -21,6 +25,11 @@ function setup() {
 	mouse = {
 		clickedPos: createVector(),
 	}
+
+	// Slider boids
+	alignSlider = createSlider(0, 5, 0.8, 0.1)
+	cohesionSlider = createSlider(0, 5, 0.4, 0.1)
+	separationSlider = createSlider(0, 5, 0.6, 0.1)
 }
 
 function draw() {
@@ -52,7 +61,10 @@ function draw() {
 
 	// Draw active zone
 	for (const _zone of activeZone) {
-		rect(_zone[0], _zone[1], _zone[2], _zone[3])
+		// stroke('black')
+		// strokeWeight(1)
+		// noFill()
+		// rect(_zone[0], _zone[1], _zone[2], _zone[3])
 	}
 }
 
@@ -62,6 +74,7 @@ function mousePressed() {
 
 function mouseReleased() {
 	activeZone.push(selectZone)
+	walls.push(new Wall(selectZone[0], selectZone[1], selectZone[2], selectZone[1]))
 }
 
 // function mouseMoved() {
