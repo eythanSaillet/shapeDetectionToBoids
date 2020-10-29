@@ -111,9 +111,9 @@ class Boid {
 			// 	distFactor *= 2
 			// }
 			if (this.pos.dist(createVector(wallCenter.x + normal1.x, wallCenter.y + normal1.y)) < this.pos.dist(createVector(wallCenter.x + normal2.x, wallCenter.y + normal2.y))) {
-				this.acc.add(normal1).setMag(Math.exp(distFactor * 1.2) * 0.05)
+				this.acc.add(normal1).setMag(Math.exp(distFactor * 1.2) * 0.06)
 			} else {
-				this.acc.add(normal2).setMag(Math.exp(distFactor * 1.2) * 0.05)
+				this.acc.add(normal2).setMag(Math.exp(distFactor * 1.2) * 0.06)
 			}
 			// console.log(distFactor, Math.exp(distFactor * 1.2) * 0.1)
 		}

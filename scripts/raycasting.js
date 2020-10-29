@@ -1,4 +1,4 @@
-let wallRepulsionRange = 75
+let wallRepulsionRange = 60
 class Wall {
 	constructor(a1, a2, b1, b2) {
 		this.a = createVector(a1, a2)
