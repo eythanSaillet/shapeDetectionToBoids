@@ -50,12 +50,14 @@ while True:
 	contours, _ = cv2.findContours(
 		mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
+	contoursData = []
 	for cnt in contours:
 		area = cv2.contourArea(cnt)
-		approx = cv2.approxPolyDP(cnt, 0.01*cv2.arcLength(cnt, True), True)
+		approx = cv2.approxPolyDP(cnt, 0.03*cv2.arcLength(cnt, True), True)
 
 		if area > 500:
 			cv2.drawContours(frame, [approx], 0, (0, 255, 0), 5)
+			contoursData.append(approx)
 
 	cv2.imshow('Mask', mask)
 	cv2.imshow('Frame', frame)
@@ -66,14 +68,12 @@ while True:
 		print('Escape hit, closing the app')
 		break
 
-	print(contours)
-
 	# JSON Writer loop
 	if frameCounter % 10 == 0:
-		data = pd.Series(contours).to_json(orient='values')
-		data = json.loads(data)
+		contoursData = pd.Series(contoursData).to_json(orient='values')
+		contoursData = json.loads(contoursData)
 		with open('data.json', 'w', encoding='utf8') as outfile:
-			json.dump(data, outfile, ensure_ascii=False)
+			json.dump(contoursData, outfile, ensure_ascii=False)
 	frameCounter += 1
 
 	# Get video dimension

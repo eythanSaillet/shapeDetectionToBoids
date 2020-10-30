@@ -55,14 +55,6 @@ function draw() {
 	}
 }
 
-function wallClear() {
-	walls = []
-	walls.push(new Wall(0, 0, width - 0, 0))
-	walls.push(new Wall(0, height - 0, width - 0, height - 0))
-	walls.push(new Wall(0, 0, 0, height - 0))
-	walls.push(new Wall(width - 0, 0, width - 0, height - 0))
-}
-
 function mousePressed() {
 	mouse.clickedPos = createVector(mouseX, mouseY)
 }
@@ -72,15 +64,36 @@ function mouseReleased() {
 	walls.push(new Wall(mouse.clickedPos.x, mouse.clickedPos.y, mouse.pos.x, mouse.pos.y))
 }
 
+function wallClear() {
+	walls = []
+	walls.push(new Wall(0, 0, width - 0, 0))
+	walls.push(new Wall(0, height - 0, width - 0, height - 0))
+	walls.push(new Wall(0, 0, 0, height - 0))
+	walls.push(new Wall(width - 0, 0, width - 0, height - 0))
+}
+
 function drawWallFromData() {
 	window
 		.fetch('scripts/data.json')
 		.then((_response) => _response.json())
-		.then((_config) => {
-			console.log(_config)
+		.then((_walls) => {
+			// console.log(_walls)
+			if (_walls.length > 0) {
+				console.log('not empty')
+				for (const _wall of _walls) {
+					for (let i = 0; i < _wall.length; i++) {
+						if (i !== _wall.length - 1) {
+							// let point = _point[0]
+							// console.log(_wall[i][0])
+							walls.push(new Wall(_wall[i][0][0], _wall[i][0][1], _wall[i + 1][0][0], _wall[i + 1][0][1]))
+						}
+					}
+				}
+			}
 		})
 }
 
 let drawWallInterval = setInterval(() => {
+	wallClear()
 	drawWallFromData()
 }, 1000)
